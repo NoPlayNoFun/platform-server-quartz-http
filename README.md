@@ -7,6 +7,7 @@ Schedule HTTP callouts with a given payload through HTTP
     POST localhost:8080/scheduler/api
     {
       "timestamp": 1397733237027,
+      "method" : "POST",
       "url": "http://localhost:3000",
       "payload": "{\"Hello\":\"world\"}"
     }
