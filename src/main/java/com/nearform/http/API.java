@@ -84,7 +84,7 @@ public class API extends HttpServlet {
 			}
 			br.close();
 		}
-		System.out.println(json);
+		System.out.println("json: " + json);
 
 		JobData jobData = this.mapper.readValue(json, JobData.class);
 
@@ -198,6 +198,7 @@ public class API extends HttpServlet {
 
 		JobDetail job = newJob(HttpJob.class)
 				.withIdentity(UUID.randomUUID().toString(), "http")
+				.usingJobData("method", jobData.getMethod())
 				.usingJobData("url", jobData.getUrl())
 				.usingJobData("payload", jobData.getPayload()).build();
 
