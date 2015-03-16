@@ -5,6 +5,13 @@
   <artifactId>quartz-http</artifactId>
   <packaging>war</packaging>
   <version>1.1-SNAPSHOT</version>
+  
+  <repositories>
+	  <repository>
+	    <id>clojars.org</id>
+	    <url>http://clojars.org/repo</url>
+	  </repository>
+  </repositories>
 
   <properties>
     <java.version>1.7</java.version>
@@ -97,6 +104,13 @@
       <artifactId>httpclient</artifactId>
       <version>4.3.3</version>
     </dependency>
+	
+	<!-- quartz-mongodb (https://github.com/michaelklishin/quartz-mongodb) -->
+	<dependency>
+	  <groupId>com.novemberain</groupId>
+	  <artifactId>quartz-mongodb</artifactId>
+	  <version>1.8.0</version>
+	</dependency>
 
   </dependencies>
 
