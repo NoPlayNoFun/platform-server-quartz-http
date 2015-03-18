@@ -105,12 +105,25 @@
       <version>4.3.3</version>
     </dependency>
 	
-	<!-- quartz-mongodb (https://github.com/michaelklishin/quartz-mongodb) -->
 	<dependency>
-	  <groupId>com.novemberain</groupId>
-	  <artifactId>quartz-mongodb</artifactId>
-	  <version>1.8.0</version>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-api</artifactId>
+	    <version>1.7.10</version>
 	</dependency>
+
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-log4j12</artifactId>
+		<version>1.7.10</version>
+	</dependency>
+
+
+	<dependency>
+	  <groupId>postgresql</groupId>
+	  <artifactId>postgresql</artifactId>
+	  <version>9.1-901-1.jdbc4</version>
+	</dependency>
+
 
   </dependencies>
 
