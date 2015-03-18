@@ -38,8 +38,12 @@ import static org.quartz.TriggerBuilder.*;
 import com.nearform.quartz.JobData;
 import com.nearform.quartz.HttpJob;
 import com.nearform.quartz.JobDataId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class API extends HttpServlet {
+
+    private static final Logger log = LoggerFactory.getLogger(com.nearform.http.API.class);
 
 	private static final long serialVersionUID = 7749936643683585485L;
 	private ObjectMapper mapper = new ObjectMapper(); // can reuse, share
@@ -71,7 +75,7 @@ public class API extends HttpServlet {
 	// This is the C from Crud. Create a new job in the scheduler
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		System.out.println("POST: Creating a job start.");
+        log.debug("POST: Creating a job start.");
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream()));
@@ -84,7 +88,7 @@ public class API extends HttpServlet {
 			}
 			br.close();
 		}
-		System.out.println("json: " + json);
+        log.debug("json: " + json);
 
 		JobData jobData = this.mapper.readValue(json, JobData.class);
 
@@ -94,11 +98,11 @@ public class API extends HttpServlet {
 			ScheduleResponse responseContent = schedule(jobData);
 			mapper.writeValue(response.getOutputStream(), responseContent);
 		} catch (SchedulerException e) {
-			System.out.println("ERROR: " + e);
+            log.error("ERROR: " + e);
 			e.printStackTrace();
 			mapper.writeValue(response.getOutputStream(), new ErrorResponse(e));
 		}
-		System.out.println("POST: Creating a job end.");
+        log.debug("POST: Creating a job end.");
 	}
 
 	// This is the U from crUd. Update an existing job in the scheduler
@@ -117,7 +121,7 @@ public class API extends HttpServlet {
 			}
 			br.close();
 		}
-		System.out.println(json);
+        log.debug(json);
 
 		JobData jobData = this.mapper.readValue(json, JobData.class);
 		JobDataId jobDataId = this.mapper.readValue(json, JobDataId.class);
@@ -128,7 +132,7 @@ public class API extends HttpServlet {
 			ScheduleResponse responseContent = update(jobData, jobDataId);
 			mapper.writeValue(response.getOutputStream(), responseContent);
 		} catch (SchedulerException e) {
-			System.out.println("ERROR: " + e);
+            log.error("ERROR: " + e);
 			e.printStackTrace();
 			mapper.writeValue(response.getOutputStream(), new ErrorResponse(e));
 		}
@@ -138,13 +142,13 @@ public class API extends HttpServlet {
 	// This is the D from cruD. Delete a job from the scheduler
 	public void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		System.out.println("DELETE: Canceling a job start.");
+        log.debug("DELETE: Canceling a job start.");
 
 		String path = request.getRequestURI();
 		String[] parts = path.split("/");
 		String key = parts[parts.length-1];
 
-		System.out.println("key to delete: " + key);
+        log.debug("key to delete: " + key);
 
 		JobDataId jobDataId = new JobDataId();
 		jobDataId.setJobId(key);
@@ -156,7 +160,7 @@ public class API extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 		mapper.writeValue(response.getOutputStream(), responseContent);
-		System.out.println("DELETE: Canceling a job end.");
+        log.debug("DELETE: Canceling a job end.");
 	}
 
 	private ScheduleResponse update(JobData jobData, JobDataId jobDataId)
@@ -188,7 +192,7 @@ public class API extends HttpServlet {
 		ScheduleResponse response = new ScheduleResponse();
 		response.setKey(jobDataId.getJobId());
 
-		System.out.println("Upading job with key: " + jobDataId.getJobId());
+        log.debug("Upading job with key: " + jobDataId.getJobId());
 
 		return response;
 	}
@@ -214,7 +218,7 @@ public class API extends HttpServlet {
 		ScheduleResponse response = new ScheduleResponse();
 		response.setKey(triggerKey.getGroup() + JobDataId.groupDelimiter + triggerKey.getName() + JobDataId.triggerJobDelimiter + job.getKey().getName());
 
-		System.out.println("Scheduling job " + startTime);
+        log.debug("Scheduling job " + startTime);
 
 		return response;
 	}
@@ -229,14 +233,14 @@ public class API extends HttpServlet {
 			boolean deleted = scheduler.deleteJob(new JobKey(jobDataId.getJobName(), jobDataId.getGroup()));
 			response.setKey(Boolean.toString(deleted));
 			if(deleted == true) {
-				System.out.println("Canceled job: " + jobDataId.getJobName());
+                log.debug("Canceled job: " + jobDataId.getJobName());
 			} else {
-				System.out.println("Failed to cancel job: " + jobDataId.getJobName());
+                log.debug("Failed to cancel job: " + jobDataId.getJobName());
 			}
 
 			return response;
 		} catch (SchedulerException e) {
-			System.out.println("Failed to cancel job: " + jobDataId.getJobName());
+            log.error("Failed to cancel job: " + jobDataId.getJobName());
 			e.printStackTrace();
 		}
 		return response;
