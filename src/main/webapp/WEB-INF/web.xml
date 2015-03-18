@@ -5,6 +5,10 @@
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
    metadata-complete="false"
    version="3.0">
+   <context-param>
+    <param-name>quartz:config-file</param-name>
+    <param-value>quartz.properties</param-value>
+  </context-param>
   <servlet>
     <servlet-name>API</servlet-name>
     <servlet-class>com.nearform.http.API</servlet-class>
