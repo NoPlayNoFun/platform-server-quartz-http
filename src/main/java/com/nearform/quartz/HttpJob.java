@@ -44,10 +44,12 @@ public class HttpJob implements Job {
 
 			String key = triggerKey.getGroup() + JobDataId.groupDelimiter + triggerKey.getName() + JobDataId.triggerJobDelimiter + context.getJobDetail().getKey().getName();
 
-			StringEntity reqEntity = new StringEntity(jsonPayload,
-					ContentType.create("application/json", "UTF-8"));
-
 			CloseableHttpResponse response = null;
+            StringEntity reqEntity = null;
+
+            if (jsonPayload != null)
+                reqEntity = new StringEntity(jsonPayload,
+                        ContentType.create("application/json", "UTF-8"));
 
 			switch (method.toUpperCase()) {
 				case "POST":
