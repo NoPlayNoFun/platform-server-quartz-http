@@ -3,6 +3,7 @@ package com.nearform.quartz;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -128,15 +129,22 @@ public class HttpJob implements Job {
     private void executeLambdaJob(String lambdaFunction, String json) {
         AWSCredentials credentials = null;
         try {
-            log.debug("create credentials");
-            credentials = new ProfileCredentialsProvider().getCredentials();
+            log.debug("use environment variables credentials");
+            credentials = new EnvironmentVariableCredentialsProvider().getCredentials();
         } catch (Exception e) {
-            log.error("Cannot load the credentials from the credential profiles file. " +
-                    "Please make sure that your credentials file is at the correct " +
-                            "location (~/.aws/credentials), and is in valid format.");
-            return;
-        }
+            log.error("Cannot load the credentials from the credential enviroment variables file. " +
+                    "Please make sure that AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are set");
 
+            try {
+                log.debug("missing environment variables credentials.... try default credential profile file");
+                credentials = new ProfileCredentialsProvider().getCredentials();
+            }catch (Exception ex) {
+                log.error("Cannot load the credentials from the credential profiles file. " +
+                        "Please make sure that your credentials file is at the correct " +
+                        "location (~/.aws/credentials), and is in valid format.");
+                return;
+            }
+        }
 
         try {
             log.debug("create InvokeAsyncRequest");
