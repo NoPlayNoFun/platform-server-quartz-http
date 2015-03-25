@@ -3,6 +3,7 @@ package com.nearform.quartz;
 public class JobData {
 
   private String url;
+  private String lambda;
   private String name;
   private String method;
   private String group;
@@ -10,6 +11,7 @@ public class JobData {
   private long timestamp;
 
   public String getUrl() { return url; }
+  public String getLambda() {return lambda; }
   public String getName() { return name; }
   public String getMethod() { return method; }
   public String getGroup() { return group; }
@@ -17,6 +19,7 @@ public class JobData {
   public long getTimestamp() { return timestamp; }
 
   public void setUrl(String s) { url = s; }
+  public void setLambda(String s) { lambda = s; }
   public void setName(String s) { name = s; }
   public void setMethod(String s) { method = s; }
   public void setGroup(String s) { group = s; }
