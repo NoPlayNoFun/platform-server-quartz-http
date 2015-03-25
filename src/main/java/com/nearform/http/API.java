@@ -171,7 +171,9 @@ public class API extends HttpServlet {
 		//  the existing job with the given name and group (if any)
 		JobDetail job = newJob(HttpJob.class)
 			    .withIdentity(jobDataId.getJobName(), jobDataId.getGroup())
+                .usingJobData("method", jobData.getMethod())
 				.usingJobData("url", jobData.getUrl())
+                .usingJobData("lambda", jobData.getLambda())
 				.usingJobData("payload", jobData.getPayload()).build();
 
 		// addJob(JobDetail jobDetail, boolean replace, boolean storeNonDurableWhileAwaitingScheduling)
@@ -204,7 +206,9 @@ public class API extends HttpServlet {
 				.withIdentity(UUID.randomUUID().toString(), "http")
 				.usingJobData("method", jobData.getMethod())
 				.usingJobData("url", jobData.getUrl())
-				.usingJobData("payload", jobData.getPayload()).build();
+                .usingJobData("lambda", jobData.getLambda())
+				.usingJobData("payload", jobData.getPayload())
+                .build();
 
 		Date startTime = new Date(jobData.getTimestamp());
 
