@@ -3,6 +3,7 @@ package com.nearform.quartz;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
@@ -50,7 +51,7 @@ public class HttpJob implements Job {
 			String method = dataMap.getString("method");
 			String json = dataMap.getString("payload");
 
-			log.debug("Executing job "
+			log.info("Executing job "
 					+ context.getJobDetail().getKey().toString()
                     + ", method:" + method
                     + ", url:" + url
@@ -127,23 +128,30 @@ public class HttpJob implements Job {
 
 
     private void executeLambdaJob(String lambdaFunction, String json) {
+
         AWSCredentials credentials = null;
         try {
-            log.debug("use environment variables credentials");
-            credentials = new EnvironmentVariableCredentialsProvider().getCredentials();
-        } catch (Exception e) {
-            log.error("Cannot load the credentials from the credential enviroment variables file. " +
-                    "Please make sure that AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are set");
 
-            try {
-                log.debug("missing environment variables credentials.... try default credential profile file");
-                credentials = new ProfileCredentialsProvider().getCredentials();
-            }catch (Exception ex) {
-                log.error("Cannot load the credentials from the credential profiles file. " +
-                        "Please make sure that your credentials file is at the correct " +
-                        "location (~/.aws/credentials), and is in valid format.");
-                return;
-            }
+            /*
+                The default credential provider chain looks for credentials in this order
+
+                Environment Variables – AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY. The SDK for Java uses the EnvironmentVariableCredentialsProvider class to load these credentials.
+
+                Java System Properties – aws.accessKeyId and aws.secretKey. The SDK for Java uses the SystemPropertiesCredentialsProvider to load these credentials.
+
+                The default credential profiles file – typically located at ~/.aws/credentials (this location may vary per platform), this credentials file is shared by many of the AWS SDKs and by the AWS CLI. The SDK for Java uses the ProfileCredentialsProvider to load these credentials.
+
+                You can create a credentials file by using the aws configure command provided by the AWS CLI, or you can create it by hand-editing the file with a text editor. For information about the credentials file format, see AWS Credentials File Format.
+
+                Instance profile credentials – these credentials can be used on EC2 instances, and are delivered through the Amazon EC2 metadata service. The SDK for Java uses the InstanceProfileCredentialsProvider to load these credentials.
+             */
+
+            credentials = new DefaultAWSCredentialsProviderChain().getCredentials();
+
+        } catch (Exception e) {
+            log.error("Cannot load the credentials from Environment Variables, Java System Properties and The default credential profiles file");
+
+            return;
         }
 
         try {
