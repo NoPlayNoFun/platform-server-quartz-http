@@ -15,6 +15,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>API</servlet-name>
-    <url-pattern>/api/*</url-pattern>
+    <url-pattern>/scheduler/api/*</url-pattern>
   </servlet-mapping>
 </web-app>
