@@ -108,7 +108,7 @@ public class API extends HttpServlet {
 	// This is the U from crUd. Update an existing job in the scheduler
 	public void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		System.out.println("PUT: Updating a job start.");
+        log.debug("PUT: Updating a job start.");
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream()));
