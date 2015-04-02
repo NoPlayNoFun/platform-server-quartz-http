@@ -2,7 +2,7 @@
 Schedule HTTP callouts with a given payload through HTTP
 ========================================================
 
-# To add a job to the queue:
+# To add a job to the queue with callback url:
 
     POST localhost:8080/scheduler/api
     {
@@ -13,6 +13,15 @@ Schedule HTTP callouts with a given payload through HTTP
     }
     
 will schedule a callout ```POST http://localhost:3000/``` with ```{"Hello": "world"}``` as the body.
+
+# To add a job to the queue with lambda call:
+    POST localhost:8080/scheduler/api
+    {
+      "timestamp": 1397733237027,
+      "method" : "POST",
+      "lambda": "helloworld",
+      "payload": "{\"Hello\":\"world\"}"
+    }
 
 You will receive back a JSON object that has the group::name pair. You will need to hang on to this if you ever intend to cancel the job.
 
