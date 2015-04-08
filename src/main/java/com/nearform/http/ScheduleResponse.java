@@ -2,9 +2,9 @@ package com.nearform.http;
 
 public class ScheduleResponse {
 
-  private String key;
+  private String jobId;
 
-  public String getKey() { return key; }
+  public String getJobId() { return jobId; }
 
-  public void setKey(String s) { key = s; }
+  public void setJobId(String s) { jobId = s; }
 }
