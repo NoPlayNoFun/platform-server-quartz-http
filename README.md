@@ -9,7 +9,7 @@ Schedule HTTP callouts with a given payload through HTTP
       "timestamp": 1397733237027,
       "method" : "POST",
       "url": "http://localhost:3000",
-      "payload": "{\"Hello\":\"world\"}"
+      "payload": {"Hello":"world"}
     }
     
 will schedule a callout ```POST http://localhost:3000/``` with ```{"Hello": "world"}``` as the body.
@@ -20,14 +20,41 @@ will schedule a callout ```POST http://localhost:3000/``` with ```{"Hello": "wor
       "timestamp": 1397733237027,
       "method" : "POST",
       "lambda": "helloworld",
-      "payload": "{\"Hello\":\"world\"}"
+      "payload": {"Hello":"world"}
+    }
+    
+    return : 
+    {
+        "jobId": "http::1e7dbcb1-a7dc-4a93-ad07-3281ac00b436_73423260-f694-4376-8bcf-2af13aed3f48"
     }
 
 You will receive back a JSON object that has the group::name pair. You will need to hang on to this if you ever intend to cancel the job.
 
+# To update a job from the queue:
+    You will need the jobId that return from post during the PUT
+
+    PUT localhost:8080/scheduler/api
+    {
+      "jobId": "http::1e7dbcb1-a7dc-4a93-ad07-3281ac00b436_73423260-f694-4376-8bcf-2af13aed3f48" 
+      "timestamp": 1397733237027,
+      "method" : "POST",
+      "lambda": "helloworld",
+      "payload": {"Hello":"world"}
+    }
+    
+    return:
+    {
+        "jobId": "http::1e7dbcb1-a7dc-4a93-ad07-3281ac00b436_73423260-f694-4376-8bcf-2af13aed3f48"
+    }
+    
 # To remove a job from the queue:
 
     DELETE localhost:8080/scheduler/api/group::name
+    
+    return:
+    {
+        "jobId": "true"
+    }
 
 This will remove a previously scheduled job with the unique key of group::name. The JSON returned will show failure if the job cannot be found or it was not possible to cancel it. 
 
