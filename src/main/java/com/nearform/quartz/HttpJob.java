@@ -45,7 +45,6 @@ public class HttpJob implements Job {
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
 
-
             JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 
             String url = dataMap.getString("url");
@@ -62,10 +61,10 @@ public class HttpJob implements Job {
 
             if (lambda == null && url == null)
                 log.error("error!!!! missing lambda and url");
-            else if (url != null)
-                executeRestJob(method, url, json);
-            else
-                executeLambdaJob(lambda, json);
+            else {
+                if (url != null) executeRestJob(method, url, json);
+                if (lambda != null) executeLambdaJob(lambda, json);
+            }
 	}
 
     private void executeRestJob(String method, String url, String jsonPayload) {

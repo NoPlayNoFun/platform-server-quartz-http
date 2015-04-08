@@ -157,7 +157,7 @@ public class API extends HttpServlet {
 		response.setContentType("application/json");
 
 		ScheduleResponse responseContent = unschedule(jobDataId);
-		if("false".equals(responseContent.getKey())) {
+		if("false".equals(responseContent.getJobId())) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 		mapper.writeValue(response.getOutputStream(), responseContent);
@@ -195,7 +195,7 @@ public class API extends HttpServlet {
 		scheduler.rescheduleJob(oldTrigger.getKey(), newTrigger);
 
 		ScheduleResponse response = new ScheduleResponse();
-		response.setKey(jobDataId.getJobId());
+		response.setJobId(jobDataId.getJobId());
 
         log.debug("Upading job with key: " + jobDataId.getJobId());
 
@@ -226,7 +226,7 @@ public class API extends HttpServlet {
 
 		TriggerKey triggerKey = trigger.getKey();
 		ScheduleResponse response = new ScheduleResponse();
-		response.setKey(triggerKey.getGroup() + JobDataId.groupDelimiter + triggerKey.getName() + JobDataId.triggerJobDelimiter + job.getKey().getName());
+		response.setJobId(triggerKey.getGroup() + JobDataId.groupDelimiter + triggerKey.getName() + JobDataId.triggerJobDelimiter + job.getKey().getName());
 
         log.debug("Scheduling job " + startTime);
 
@@ -236,12 +236,12 @@ public class API extends HttpServlet {
 	// Delete the Job and Unschedule All of Its Triggers
 	private ScheduleResponse unschedule(JobDataId jobDataId) {
 		ScheduleResponse response = new ScheduleResponse();
-		response.setKey("false");
+		response.setJobId("false");
 		try {
 			// JobKey takes a name as first param and group as second param
 			// We've stored it the other way around so reference the array "backwards"
 			boolean deleted = scheduler.deleteJob(new JobKey(jobDataId.getJobName(), jobDataId.getGroup()));
-			response.setKey(Boolean.toString(deleted));
+			response.setJobId(Boolean.toString(deleted));
 			if(deleted == true) {
                 log.debug("Canceled job: " + jobDataId.getJobName());
 			} else {
