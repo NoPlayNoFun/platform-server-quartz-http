@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 //import javax.servlet.*;
 import javax.servlet.http.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -136,7 +137,7 @@ public class API extends HttpServlet {
 			e.printStackTrace();
 			mapper.writeValue(response.getOutputStream(), new ErrorResponse(e));
 		}
-		System.out.println("PUT: Updating a job end.");
+        log.debug("PUT: Updating a job end.");
 	}
 
 	// This is the D from cruD. Delete a job from the scheduler
@@ -164,8 +165,10 @@ public class API extends HttpServlet {
 	}
 
 	private ScheduleResponse update(JobData jobData, JobDataId jobDataId)
-			throws SchedulerException {
-		System.out.println(jobData);
+			throws SchedulerException, JsonProcessingException {
+
+        String jsonString = this.mapper.writeValueAsString(jobData.getPayload());
+        log.debug("schedule() => " + jsonString);
 
 		// Add the new job to the scheduler, instructing it to "replace"
 		//  the existing job with the given name and group (if any)
@@ -174,7 +177,7 @@ public class API extends HttpServlet {
                 .usingJobData("method", jobData.getMethod())
 				.usingJobData("url", jobData.getUrl())
                 .usingJobData("lambda", jobData.getLambda())
-				.usingJobData("payload", jobData.getPayload()).build();
+				.usingJobData("payload", jsonString).build();
 
 		// addJob(JobDetail jobDetail, boolean replace, boolean storeNonDurableWhileAwaitingScheduling)
         // Add the given Job to the Scheduler - with no associated Trigger.
@@ -200,14 +203,17 @@ public class API extends HttpServlet {
 	}
 
 	private ScheduleResponse schedule(JobData jobData)
-			throws SchedulerException {
+			throws SchedulerException, JsonProcessingException {
+
+        String jsonString = this.mapper.writeValueAsString(jobData.getPayload());
+        log.info("schedule() => " + jsonString);
 
 		JobDetail job = newJob(HttpJob.class)
 				.withIdentity(UUID.randomUUID().toString(), "http")
 				.usingJobData("method", jobData.getMethod())
 				.usingJobData("url", jobData.getUrl())
                 .usingJobData("lambda", jobData.getLambda())
-				.usingJobData("payload", jobData.getPayload())
+				.usingJobData("payload", jsonString)
                 .build();
 
 		Date startTime = new Date(jobData.getTimestamp());

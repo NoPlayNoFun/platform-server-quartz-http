@@ -12,12 +12,14 @@ import com.amazonaws.services.lambda.AWSLambdaAsyncClient;
 import com.amazonaws.services.lambda.AWSLambdaClient;
 import com.amazonaws.services.lambda.model.InvokeAsyncRequest;
 import com.amazonaws.services.lambda.model.InvokeAsyncResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.TriggerKey;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.concurrent.Future;
 
 import com.nearform.quartz.JobDataId;
@@ -44,15 +46,15 @@ public class HttpJob implements Job {
 			throws JobExecutionException {
 
 
-			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+            JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 
-			String url = dataMap.getString("url");
+            String url = dataMap.getString("url");
             String lambda = dataMap.getString("lambda");
-			String method = dataMap.getString("method");
-			String json = dataMap.getString("payload");
+            String method = dataMap.getString("method");
+            String json = dataMap.getString("payload");
 
-			log.info("Executing job "
-					+ context.getJobDetail().getKey().toString()
+            log.info("Executing job "
+                    + context.getJobDetail().getKey().toString()
                     + ", method:" + method
                     + ", url:" + url
                     + ", lambda:" + lambda
