@@ -12,6 +12,11 @@ Schedule HTTP callouts with a given payload through HTTP
       "payload": {"Hello":"world"}
     }
     
+    return : 
+    {
+      "jobId": "http::1e7dbcb1-a7dc-4a93-ad07-3281ac00b436_73423260-f694-4376-8bcf-2af13aed3f48"
+    }
+    
 will schedule a callout ```POST http://localhost:3000/``` with ```{"Hello": "world"}``` as the body.
 
 # To add a job to the queue with lambda call:
